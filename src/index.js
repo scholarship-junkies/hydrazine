@@ -12,7 +12,6 @@ import {
   Fragment,
   RouterProvider,
 } from 'redux-little-router';
-import createLogger from 'redux-logger';
 import createSagaMiddleware, {
   takeLatest,
 } from 'redux-saga';
@@ -42,6 +41,7 @@ const createListenerSaga = (enterListeners, leaveListeners) => {
 
 class Hydrazine {
   constructor({
+    middlewares = [],
     mountNode,
     reducer = state => (state || {}),
   }) {
@@ -50,6 +50,7 @@ class Hydrazine {
       enterListeners: {},
       layouts: {},
       leaveListeners: {},
+      middlewares,
       reducer,
     };
     this.mountNode = mountNode;
@@ -89,6 +90,7 @@ class Hydrazine {
       enterListeners,
       layouts,
       leaveListeners,
+      middlewares,
       reducer,
     } = this.builder;
 
@@ -106,7 +108,7 @@ class Hydrazine {
           routes,
           pathname: location.pathname,
         }),
-        applyMiddleware(this.sagas, createLogger())
+        applyMiddleware(this.sagas, ...middlewares)
       )
     );
 

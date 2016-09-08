@@ -687,10 +687,6 @@ var _redux = require('redux');
 
 var _reduxLittleRouter = require('redux-little-router');
 
-var _reduxLogger = require('redux-logger');
-
-var _reduxLogger2 = _interopRequireDefault(_reduxLogger);
-
 var _reduxSaga = require('redux-saga');
 
 var _reduxSaga2 = _interopRequireDefault(_reduxSaga);
@@ -698,6 +694,8 @@ var _reduxSaga2 = _interopRequireDefault(_reduxSaga);
 var _effects = require('redux-saga/effects');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -758,6 +756,8 @@ var createListenerSaga = function createListenerSaga(enterListeners, leaveListen
 
 var Hydrazine = function () {
   function Hydrazine(_ref2) {
+    var _ref2$middlewares = _ref2.middlewares;
+    var middlewares = _ref2$middlewares === undefined ? [] : _ref2$middlewares;
     var mountNode = _ref2.mountNode;
     var _ref2$reducer = _ref2.reducer;
     var reducer = _ref2$reducer === undefined ? function (state) {
@@ -771,6 +771,7 @@ var Hydrazine = function () {
       enterListeners: {},
       layouts: {},
       leaveListeners: {},
+      middlewares: middlewares,
       reducer: reducer
     };
     this.mountNode = mountNode;
@@ -814,6 +815,7 @@ var Hydrazine = function () {
       var enterListeners = _builder2.enterListeners;
       var layouts = _builder2.layouts;
       var leaveListeners = _builder2.leaveListeners;
+      var middlewares = _builder2.middlewares;
       var reducer = _builder2.reducer;
 
 
@@ -826,7 +828,7 @@ var Hydrazine = function () {
       this.store = (0, _redux.createStore)(reducer, undefined, (0, _redux.compose)((0, _reduxLittleRouter.createStoreWithRouter)({
         routes: routes,
         pathname: location.pathname
-      }), (0, _redux.applyMiddleware)(this.sagas, (0, _reduxLogger2.default)())));
+      }), _redux.applyMiddleware.apply(undefined, [this.sagas].concat(_toConsumableArray(middlewares)))));
 
       var AppUI = function AppUI() {
         return _react2.default.createElement('div', {}, Object.values(layouts).map(function (layout) {
