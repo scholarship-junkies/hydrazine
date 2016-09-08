@@ -9,8 +9,8 @@ import {
 import {
   createStoreWithRouter,
   initializeCurrentLocation,
-  provideRouter,
   Fragment,
+  RouterProvider,
 } from 'redux-little-router';
 import createLogger from 'redux-logger';
 import createSagaMiddleware, {
@@ -43,7 +43,7 @@ const createListenerSaga = (enterListeners, leaveListeners) => {
 class Hydrazine {
   constructor({
     mountNode,
-    reducer,
+    reducer = state => (state || {}),
   }) {
     this.builder = {
       allRoutes: [],
@@ -56,7 +56,7 @@ class Hydrazine {
   }
 
   get(route, {
-    Layout,
+    layout: Layout,
     onEnter,
     onLeave,
   }) {
@@ -67,9 +67,12 @@ class Hydrazine {
       leaveListeners,
     } = this.builder;
     if (Layout in layouts) {
-      layouts[Layout].push(route);
+      layouts[Layout].routes.push(route);
     } else {
-      layouts[Layout] = [route];
+      layouts[Layout] = {
+        routes: [route],
+        component: Layout,
+      };
     }
     if (onEnter) {
       enterListeners[route] = onEnter;
@@ -89,15 +92,18 @@ class Hydrazine {
       reducer,
     } = this.builder;
 
+    const routes = {};
+    allRoutes.forEach(route => {
+      routes[route] = {};
+    });
+
     this.sagas = createSagaMiddleware();
     this.store = createStore(
       reducer,
       undefined,
       compose(
         createStoreWithRouter({
-          routes: Object.keys(allRoutes).map(
-            () => ({})
-          ),
+          routes,
           pathname: location.pathname,
         }),
         applyMiddleware(this.sagas, createLogger())
@@ -111,20 +117,25 @@ class Hydrazine {
       );
     }
 
-    const AppUI = React.createElement(
+    const AppUI = () => React.createElement(
       'div',
-      Object.keys(layouts).map(
-        Layout => React.createElement(
+      {},
+      Object.values(layouts).map(
+        layout => React.createElement(
           Fragment,
-          { forRoutes: layouts[Layout] },
-          React.createElement(Layout)
+          { forRoutes: layout.routes },
+          React.createElement(layout.component)
         )
       )
     );
 
     const App = () => React.createElement(
-      Provider, { store: this.store }, (
-        provideRouter({ store: this.store })(AppUI)
+      Provider,
+      { store: this.store },
+      React.createElement(
+        RouterProvider,
+        { store: this.store },
+        React.createElement(AppUI)
       )
     );
 
