@@ -110,13 +110,6 @@ class Hydrazine {
       )
     );
 
-    const initialLocation = this.store.getState().router;
-    if (initialLocation) {
-      this.store.dispatch(
-        initializeCurrentLocation(initialLocation)
-      );
-    }
-
     const AppUI = () => React.createElement(
       'div',
       {},
@@ -141,6 +134,13 @@ class Hydrazine {
 
     const listenerSaga = createListenerSaga(enterListeners, leaveListeners);
     this.sagas.run(listenerSaga);
+
+    const initialLocation = this.store.getState().router;
+    if (initialLocation) {
+      this.store.dispatch(
+        initializeCurrentLocation(initialLocation)
+      );
+    }
 
     render(React.createElement(App), this.mountNode);
 

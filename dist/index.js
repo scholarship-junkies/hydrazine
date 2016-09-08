@@ -828,11 +828,6 @@ var Hydrazine = function () {
         pathname: location.pathname
       }), (0, _redux.applyMiddleware)(this.sagas, (0, _reduxLogger2.default)())));
 
-      var initialLocation = this.store.getState().router;
-      if (initialLocation) {
-        this.store.dispatch((0, _reduxLittleRouter.initializeCurrentLocation)(initialLocation));
-      }
-
       var AppUI = function AppUI() {
         return _react2.default.createElement('div', {}, Object.values(layouts).map(function (layout) {
           return _react2.default.createElement(_reduxLittleRouter.Fragment, { forRoutes: layout.routes }, _react2.default.createElement(layout.component));
@@ -845,6 +840,11 @@ var Hydrazine = function () {
 
       var listenerSaga = createListenerSaga(enterListeners, leaveListeners);
       this.sagas.run(listenerSaga);
+
+      var initialLocation = this.store.getState().router;
+      if (initialLocation) {
+        this.store.dispatch((0, _reduxLittleRouter.initializeCurrentLocation)(initialLocation));
+      }
 
       (0, _reactDom.render)(_react2.default.createElement(App), this.mountNode);
 
