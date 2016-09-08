@@ -26,3 +26,7 @@ app.get('/two', {
 
 app.start();
 ```
+
+## Demo
+
+From repo directory: `npm i && npm start`. Server will start on port `8080`.
