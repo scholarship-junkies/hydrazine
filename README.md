@@ -18,8 +18,8 @@ const Two = () => <h1>Two</h1>;
 
 app.get('/', { layout: Home });
 app.get('/one', { layout: One });
-app.get('/two/:fuel', {
-  layout: TwoContainer,
+app.get('/two', {
+  layout: Two,
   onEnter: () => { /* do something */ },
   onLeave: () => { /* do something */ },
 });
