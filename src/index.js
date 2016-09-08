@@ -116,9 +116,12 @@ class Hydrazine {
       'div',
       {},
       Object.values(layouts).map(
-        layout => React.createElement(
+        (layout, i) => React.createElement(
           Fragment,
-          { forRoutes: layout.routes },
+          {
+            forRoutes: layout.routes,
+            key: i,
+          },
           React.createElement(layout.component)
         )
       )

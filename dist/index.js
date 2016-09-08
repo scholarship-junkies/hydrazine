@@ -831,8 +831,11 @@ var Hydrazine = function () {
       }), _redux.applyMiddleware.apply(undefined, [this.sagas].concat(_toConsumableArray(middlewares)))));
 
       var AppUI = function AppUI() {
-        return _react2.default.createElement('div', {}, Object.values(layouts).map(function (layout) {
-          return _react2.default.createElement(_reduxLittleRouter.Fragment, { forRoutes: layout.routes }, _react2.default.createElement(layout.component));
+        return _react2.default.createElement('div', {}, Object.values(layouts).map(function (layout, i) {
+          return _react2.default.createElement(_reduxLittleRouter.Fragment, {
+            forRoutes: layout.routes,
+            key: i
+          }, _react2.default.createElement(layout.component));
         }));
       };
 
