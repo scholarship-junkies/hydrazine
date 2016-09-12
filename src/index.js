@@ -10,12 +10,48 @@ import {
   createStoreWithRouter,
   initializeCurrentLocation,
   Fragment,
+  PUSH,
   RouterProvider,
 } from 'redux-little-router';
 import createSagaMiddleware, {
   takeLatest,
 } from 'redux-saga';
 import { call } from 'redux-saga/effects';
+
+// Credit to https://github.com/FormidableLabs/redux-little-router/blob/master/src/link.js
+const normalizeLocation = href => {
+  if (typeof href === 'string') {
+    const pathnameAndQuery = href.split('?');
+    const pathname = pathnameAndQuery[0];
+    const query = pathnameAndQuery[1];
+    return query ? { pathname, search: `?${query}` } : { pathname };
+  }
+  return href;
+};
+const resolveQueryForLocation = ({
+  linkLocation,
+  persistQuery,
+  currentLocation,
+}) => {
+  const currentQuery = currentLocation &&
+    currentLocation.query;
+
+  // Only use the query from state if it exists
+  // and the href doesn't provide its own query
+  if (
+    persistQuery &&
+    currentQuery &&
+    !linkLocation.search &&
+    !linkLocation.query
+  ) {
+    return {
+      pathname: linkLocation.pathname,
+      query: currentQuery,
+    };
+  }
+
+  return linkLocation;
+};
 
 const createListenerSaga = (enterListeners, leaveListeners) => {
   let prevRoute = null;
@@ -150,6 +186,17 @@ class Hydrazine {
     render(React.createElement(App), this.mountNode);
 
     delete this.builder;
+  }
+
+  go(path) {
+    const newLoc = this.store.history.createLocation(resolveQueryForLocation({
+      linkLocation: normalizeLocation(path),
+      currentLocation: this.store.history,
+    }));
+    this.store.dispatch({
+      type: PUSH,
+      payload: newLoc,
+    });
   }
 }
 

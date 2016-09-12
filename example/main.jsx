@@ -18,7 +18,13 @@ const Home = () => (
 const One = () => (
   <div>
     <h1>One</h1>
-    <Link href="/two/Hydrazine">Next Page</Link>
+    <span
+      onClick={() => {
+        app.go('/two/Hydrazine');
+      }}
+    >
+      Next Page
+    </span>
   </div>
 );
 

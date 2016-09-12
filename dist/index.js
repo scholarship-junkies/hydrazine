@@ -699,13 +699,42 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+// Credit to https://github.com/FormidableLabs/redux-little-router/blob/master/src/link.js
+var normalizeLocation = function normalizeLocation(href) {
+  if (typeof href === 'string') {
+    var pathnameAndQuery = href.split('?');
+    var pathname = pathnameAndQuery[0];
+    var query = pathnameAndQuery[1];
+    return query ? { pathname: pathname, search: '?' + query } : { pathname: pathname };
+  }
+  return href;
+};
+var resolveQueryForLocation = function resolveQueryForLocation(_ref) {
+  var linkLocation = _ref.linkLocation;
+  var persistQuery = _ref.persistQuery;
+  var currentLocation = _ref.currentLocation;
+
+  var currentQuery = currentLocation && currentLocation.query;
+
+  // Only use the query from state if it exists
+  // and the href doesn't provide its own query
+  if (persistQuery && currentQuery && !linkLocation.search && !linkLocation.query) {
+    return {
+      pathname: linkLocation.pathname,
+      query: currentQuery
+    };
+  }
+
+  return linkLocation;
+};
+
 var createListenerSaga = function createListenerSaga(enterListeners, leaveListeners) {
   var _marked = [handleChange].map(regeneratorRuntime.mark);
 
   var prevRoute = null;
 
-  function handleChange(_ref) {
-    var route = _ref.payload.route;
+  function handleChange(_ref2) {
+    var route = _ref2.payload.route;
     return regeneratorRuntime.wrap(function handleChange$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
@@ -755,14 +784,14 @@ var createListenerSaga = function createListenerSaga(enterListeners, leaveListen
 };
 
 var Hydrazine = function () {
-  function Hydrazine(_ref2) {
-    var _ref2$middlewares = _ref2.middlewares;
-    var middlewares = _ref2$middlewares === undefined ? [] : _ref2$middlewares;
-    var mountNode = _ref2.mountNode;
-    var _ref2$reducer = _ref2.reducer;
-    var reducer = _ref2$reducer === undefined ? function (state) {
+  function Hydrazine(_ref3) {
+    var _ref3$middlewares = _ref3.middlewares;
+    var middlewares = _ref3$middlewares === undefined ? [] : _ref3$middlewares;
+    var mountNode = _ref3.mountNode;
+    var _ref3$reducer = _ref3.reducer;
+    var reducer = _ref3$reducer === undefined ? function (state) {
       return state || {};
-    } : _ref2$reducer;
+    } : _ref3$reducer;
 
     _classCallCheck(this, Hydrazine);
 
@@ -779,10 +808,10 @@ var Hydrazine = function () {
 
   _createClass(Hydrazine, [{
     key: 'get',
-    value: function get(route, _ref3) {
-      var Layout = _ref3.layout;
-      var onEnter = _ref3.onEnter;
-      var onLeave = _ref3.onLeave;
+    value: function get(route, _ref4) {
+      var Layout = _ref4.layout;
+      var onEnter = _ref4.onEnter;
+      var onLeave = _ref4.onLeave;
       var _builder = this.builder;
       var allRoutes = _builder.allRoutes;
       var enterListeners = _builder.enterListeners;
@@ -854,6 +883,18 @@ var Hydrazine = function () {
       (0, _reactDom.render)(_react2.default.createElement(App), this.mountNode);
 
       delete this.builder;
+    }
+  }, {
+    key: 'go',
+    value: function go(path) {
+      var newLoc = this.store.history.createLocation(resolveQueryForLocation({
+        linkLocation: normalizeLocation(path),
+        currentLocation: this.store.history
+      }));
+      this.store.dispatch({
+        type: _reduxLittleRouter.PUSH,
+        payload: newLoc
+      });
     }
   }]);
 
