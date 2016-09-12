@@ -672,6 +672,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.takeLatestAndCatch = exports.takeEveryAndCatch = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -694,6 +695,8 @@ var _reduxSaga2 = _interopRequireDefault(_reduxSaga);
 var _effects = require('redux-saga/effects');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var _marked2 = [takeEveryAndCatch, takeLatestAndCatch].map(regeneratorRuntime.mark);
 
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
@@ -901,4 +904,86 @@ var Hydrazine = function () {
   return Hydrazine;
 }();
 
+function takeEveryAndCatch(type, handler, onError) {
+  return regeneratorRuntime.wrap(function takeEveryAndCatch$(_context4) {
+    while (1) {
+      switch (_context4.prev = _context4.next) {
+        case 0:
+          return _context4.delegateYield((0, _reduxSaga.takeEvery)(type, regeneratorRuntime.mark(function takeWrapper(action) {
+            return regeneratorRuntime.wrap(function takeWrapper$(_context3) {
+              while (1) {
+                switch (_context3.prev = _context3.next) {
+                  case 0:
+                    _context3.prev = 0;
+                    _context3.next = 3;
+                    return (0, _effects.call)(handler, action);
+
+                  case 3:
+                    _context3.next = 9;
+                    break;
+
+                  case 5:
+                    _context3.prev = 5;
+                    _context3.t0 = _context3['catch'](0);
+                    _context3.next = 9;
+                    return (0, _effects.call)(onError, _context3.t0);
+
+                  case 9:
+                  case 'end':
+                    return _context3.stop();
+                }
+              }
+            }, takeWrapper, this, [[0, 5]]);
+          })), 't0', 1);
+
+        case 1:
+        case 'end':
+          return _context4.stop();
+      }
+    }
+  }, _marked2[0], this);
+}
+
+function takeLatestAndCatch(type, handler, onError) {
+  return regeneratorRuntime.wrap(function takeLatestAndCatch$(_context6) {
+    while (1) {
+      switch (_context6.prev = _context6.next) {
+        case 0:
+          return _context6.delegateYield((0, _reduxSaga.takeLatest)(type, regeneratorRuntime.mark(function takeWrapper(action) {
+            return regeneratorRuntime.wrap(function takeWrapper$(_context5) {
+              while (1) {
+                switch (_context5.prev = _context5.next) {
+                  case 0:
+                    _context5.prev = 0;
+                    _context5.next = 3;
+                    return (0, _effects.call)(handler, action);
+
+                  case 3:
+                    _context5.next = 9;
+                    break;
+
+                  case 5:
+                    _context5.prev = 5;
+                    _context5.t0 = _context5['catch'](0);
+                    _context5.next = 9;
+                    return (0, _effects.call)(onError, _context5.t0);
+
+                  case 9:
+                  case 'end':
+                    return _context5.stop();
+                }
+              }
+            }, takeWrapper, this, [[0, 5]]);
+          })), 't0', 1);
+
+        case 1:
+        case 'end':
+          return _context6.stop();
+      }
+    }
+  }, _marked2[1], this);
+}
+
 exports.default = Hydrazine;
+exports.takeEveryAndCatch = takeEveryAndCatch;
+exports.takeLatestAndCatch = takeLatestAndCatch;
