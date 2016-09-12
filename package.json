@@ -4,11 +4,7 @@
   "description": "Redux-Little-Router apps from concentrate.",
   "main": "dist/index.js",
   "scripts": {
-    "build:start": "mkdir build-tmp || echo 'build-tmp already exists'",
-    "build:babel": "babel src -d build-tmp",
-    "build:generators": "regenerator --include-runtime build-tmp dist",
-    "build:cleanup": "rm -rf build-tmp",
-    "build": "npm run build:start && npm run build:babel && npm run build:generators && npm run build:cleanup",
+    "build": "webpack && sed -ie 's/_regeneratorRuntime/_regenerator/g' dist/index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "webpack-dev-server --progress --config example/webpack.config.js"
   },
@@ -31,6 +27,7 @@
     "babel-cli": "^6.14.0",
     "babel-core": "^6.14.0",
     "babel-loader": "^6.2.5",
+    "babel-plugin-transform-runtime": "^6.15.0",
     "babel-preset-es2015": "^6.14.0",
     "babel-preset-react": "^6.11.1",
     "babel-preset-stage-1": "^6.13.0",
@@ -42,6 +39,7 @@
     "regenerator": "^0.8.46"
   },
   "dependencies": {
+    "babel-runtime": "^6.11.6",
     "react": "^15.3.1",
     "react-dom": "^15.3.1",
     "react-redux": "^4.4.5",

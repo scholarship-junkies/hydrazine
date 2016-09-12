@@ -101,7 +101,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	var _marked2 = [takeEveryAndCatch, takeLatestAndCatch].map(_regenerator.mark);
+	var _marked2 = [takeEveryAndCatch, takeLatestAndCatch].map(_regeneratorRuntime.mark);
 
 	// Credit to https://github.com/FormidableLabs/redux-little-router/blob/master/src/link.js
 	var normalizeLocation = function normalizeLocation(href) {
