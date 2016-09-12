@@ -14,6 +14,7 @@ import {
   RouterProvider,
 } from 'redux-little-router';
 import createSagaMiddleware, {
+  takeEvery,
   takeLatest,
 } from 'redux-saga';
 import { call } from 'redux-saga/effects';
@@ -200,4 +201,28 @@ class Hydrazine {
   }
 }
 
+function* takeEveryAndCatch(type, handler, onError) {
+  yield* takeEvery(type, function* takeWrapper(action) {
+    try {
+      yield call(handler, action);
+    } catch (err) {
+      yield call(onError, err);
+    }
+  });
+}
+
+function* takeLatestAndCatch(type, handler, onError) {
+  yield* takeLatest(type, function* takeWrapper(action) {
+    try {
+      yield call(handler, action);
+    } catch (err) {
+      yield call(onError, err);
+    }
+  });
+}
+
 export default Hydrazine;
+export {
+  takeEveryAndCatch,
+  takeLatestAndCatch,
+};
