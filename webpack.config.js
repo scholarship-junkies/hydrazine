@@ -5,16 +5,24 @@ module.exports = {
     libraryTarget: 'umd',
     filename: `${__dirname}/dist/index.js`,
   },
-  externals: [/*
+  externals: [
     {
       react: {
-        root: 'react',
+        root: 'React',
         commonjs: 'react',
         commonjs2: 'react',
-        amd: 'react'
+        amd: 'react',
       },
     },
-  */],
+    {
+      'react-dom': {
+        root: 'ReactDOM',
+        commonjs: 'react-dom',
+        commonjs2: 'react-dom',
+        amd: 'react-dom',
+      },
+    },
+  ],
   module: {
     loaders: [
       {
