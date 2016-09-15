@@ -5,6 +5,7 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "webpack && sed -ie 's/_regeneratorRuntime/_regenerator/g' dist/index.js",
+    "prepublish": "npm run build",
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "webpack-dev-server --progress --config example/webpack.config.js"
   },
